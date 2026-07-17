@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transaction Manager App</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <!-- Removed CDN script; using local jsQR library -->
+  <script src="{{ url_for('static', filename='js/jsQR.js') }}"></script>
+</head>
+<body>
+  <div id="loginPage" class="login-wrapper">
+    <div class="login-box">
+      <div class="login-icon">👤</div>
+      <h1>Login</h1>
+      <p class="login-subtitle">Sign in to continue.</p>
+
+      <form id="authForm">
+        <div class="form-group">
+          <label for="mobileNo">Mobile Number</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📱</span>
+            <input
+              type="tel"
+              id="mobileNo"
+              required
+              pattern="[0-9]{10}"
+              maxlength="10"
+              placeholder="e.g., 9876543210"
+              oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🔒</span>
+            <input
+              type="password"
+              id="password"
+              required
+              minlength="8"
+              maxlength="32"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Continue</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="transactionPage" class="app-container hidden">
+    <header class="app-header">
+      <div class="user-info">
+        <h2 id="displayMobile">Mobile: --</h2>
+        <p id="displayUID">User ID: --</p>
+      </div>
+      <button class="btn btn-secondary" id="logoutBtn" type="button">Logout</button>
+    </header>
+
+    <main>
+      <div class="section-bar">
+        <h3 id="panelTitle">Records Directory</h3>
+        <div class="button-group">
+          <button id="addNewBtn" class="add-trigger" type="button">Add New <b>+</b></button>
+          <button id="viewRecordsBtn" class="add-trigger" type="button">View Records <b>👁</b></button>
+        </div>
+      </div>
+
+      <div id="transactionCard" class="card hidden">
+        <form id="transactionForm" class="transaction-grid">
+          <div class="scanner-preview">
+            <div id="reader"></div>
+            <div id="scannerStatus" style="font-size:12px;color:#666;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="qrText">Decoded QR</label>
+            <input
+              type="text"
+              id="qrText"
+              readonly
+              required
+              placeholder="Awaiting scanner input..."
+              style="font-family: monospace; background:#f8fafc;"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="qrLabel">Give QR Label</label>
+            <input type="text" id="qrLabel" maxlength="100" placeholder="Enter a label" />
+          </div>
+
+          <div class="form-group">
+            <label for="imageUpload">Upload Image</label>
+            <input type="file" id="imageUpload" accept="image/*" />
+          </div>
+
+          <div class="form-group">
+            <label>Image Preview</label>
+            <div class="preview-box">
+              <img id="imagePreview" alt="Image Preview" />
+              <span id="previewPlaceholder">No image selected</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" id="submitActionBtn" class="btn btn-primary">Save Entry</button>
+            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+          </div>
+
+          <p id="formError" class="error"></p>
+        </form>
+
+        <div id="transactionView" class="hidden">
+          <div class="data-display-row">
+            <span>Transaction Label</span>
+            <p id="viewLabel">--</p>
+          </div>
+
+          <div class="data-display-row">
+            <span>Scanned QR Text</span>
+            <p id="viewText" style="word-break: break-all; font-family: monospace; color: var(--primary);"></p>
+          </div>
+
+          <div class="data-display-row">
+            <span>Attached File</span>
+            <div id="viewImage">No file uploaded</div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="editBtn" type="button">Modify</button>
+            <button class="btn btn-danger" id="deleteBtn" type="button">Delete</button>
+            <button class="btn btn-secondary" id="dismissBtn" type="button">Dismiss</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="recordsTableCard" class="card hidden" style="margin-top: 1.5rem;">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>QR Text</th>
+                <th>Image</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recordsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="historyPlaceholder" class="card placeholder">
+        <p>No records yet</p>
+        <p>Use Add New to capture a QR transaction.</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
